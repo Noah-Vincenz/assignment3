@@ -2,15 +2,21 @@
 #define NODE_H
 
 #include <iostream>
+#include <string>
 using std::cout;
 using std::cerr;
 using std::endl;
 
-// TODO your code for the Node class goes here:
-// (Note the 'NodeIterator' class will report lots of errors until Node exists
-
-
-
+template <typename T>
+class Node {
+public:
+    T data;
+    Node<T> * next;
+    Node<T> * previous;
+    Node (T dataIn)
+                : data(dataIn), next(nullptr), previous(nullptr) {
+    }
+};
 
 
 template<typename T>
@@ -32,6 +38,15 @@ public:
     }
 
     // TODO: complete the code for NodeIterator here
+    void operator++() {
+        current = current->next;
+    }
+    bool const operator==(NodeIterator &otherNodeIterator) {
+        return current == otherNodeIterator.current;
+    }
+    bool const operator!=(NodeIterator &otherNodeIterator) {
+        return current != otherNodeIterator.current;
+    }
         
     
 };
