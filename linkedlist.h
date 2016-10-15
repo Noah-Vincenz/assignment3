@@ -2,6 +2,7 @@
 #define LINKEDLIST_H
 
 #include "node.h"
+#include <initializer_list>
 
 // TODO your code goes here:
 template <typename T>
@@ -11,7 +12,7 @@ private:
     Node<T>* tail;
     int count;
 public:
-    LinkedList ()
+    LinkedList () //TODO: change constructor so it takes initiliser list
             : head(nullptr), tail(nullptr), count(0) {
     }
     void push_front(T dataIn) {
@@ -52,25 +53,51 @@ public:
     }
     int const size() {
         return count;
-    }/*
-    NodeIterator const begin() {
-        return NodeIterator(head);
     }
-    NodeIterator<T> const end() {
-        NodeIterator nI = begin();
+    NodeIterator<T> begin() {
+        NodeIterator<T>* nI = new NodeIterator<T>(head);
+        return *nI;
+    }
+    NodeIterator<T> end() {
+        NodeIterator<T>* nI = *begin();
         for (int i = 0; i <= size(); ++i) {
             nI++;
         }
-        return nI;
-    }
+        return *nI;
+    }/*
     ~LinkedList() {
-        NodeIterator nI = begin();
+        NodeIterator<T> nI = begin();
+        NodeIterator<T>* nI2 = *nI;
         for (int i = 0; i < size(); ++i) {
-            delete nI*;
-            nI++;
+            delete nI.getCurrentNode();
+            nI2++;
         }
     }*/
-
+    NodeIterator<T> insert (NodeIterator<T>* nI, T dataIn) { //inserts before current & returns iterator pointing to newElem
+        NodeIterator<T> nI2 = *nI;
+        Node<T>* newNode(dataIn);
+        Node<T> beforeNew = nI2.getCurrentNode()->previous;
+        Node<T> afterNew = nI2.getCurrentNode();
+        nI++;
+        beforeNew.next = newNode;
+        afterNew.previous = newNode;
+        *newNode->next = afterNew;
+        *newNode->previous = beforeNew;
+        count++;
+        return nI;
+    }
+    NodeIterator<T> erase (NodeIterator<T>* nI) {
+        NodeIterator<T> nI2 = *nI;
+        Node<T> first = nI2.getCurrentNode()->previous;
+        Node<T> second = nI2.getCurrentNode()->next;
+        nI2.getCurrentNode()->previous = nullptr;
+        nI2.getCurrentNode()->next = nullptr;
+        nI++;
+        *first.next = second;
+        *second.previous = first;
+        count--; //delete first and second???
+        return nI;
+    }
 };
 
 

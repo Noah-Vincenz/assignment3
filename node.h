@@ -38,14 +38,18 @@ public:
     }
 
     // TODO: complete the code for NodeIterator here
-    void operator++() {
+    void const operator++() {
         current = current->next;
     }
+    //const node_iter& operator++() { current = current->next; return *this; }
     bool const operator==(NodeIterator &otherNodeIterator) {
         return current == otherNodeIterator.current;
     }
     bool const operator!=(NodeIterator &otherNodeIterator) {
         return current != otherNodeIterator.current;
+    }
+    Node<T>* getCurrentNode () {
+        return current;
     }
         
     
