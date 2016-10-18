@@ -80,20 +80,27 @@ public:
         return *nI;
     }
     ~LinkedList() {
-        NodeIterator<T>* nI = new NodeIterator<T>(head);
-        for (int i = 0; i < size(); ++i) {
-            delete nI->getCurrentNode();
-            nI->operator++();
+        while (size() >= 1) {
+            Node<T>* prevHead = head;
+            head = head->next;
+            delete prevHead;
+            count--;
         }
+        delete head;
     }
     NodeIterator<T> insert (NodeIterator<T> nI,const T dataIn) { //inserts before current & returns iterator pointing to newElem
         Node<T>* newNode = new Node<T>(dataIn);
         Node<T>* beforeNew = nI.getCurrentNode()->previous;
         Node<T>* afterNew = nI.getCurrentNode();
-        beforeNew->next = newNode;
+        if(beforeNew != nullptr) {
+            beforeNew->next = newNode;
+            newNode->previous = beforeNew;
+        }
+        else {
+            head = newNode;
+        }
         afterNew->previous = newNode;
         newNode->next = afterNew;
-        newNode->previous = beforeNew;
         nI.operator--();
         count++;
         return nI;
@@ -102,9 +109,25 @@ public:
         Node<T>* current = nI.getCurrentNode();
         Node<T>* before = nI.getCurrentNode()->previous;
         Node<T>* after = nI.getCurrentNode()->next;
-        before->next = after;
-        after->previous = before;
-        nI.operator++();
+        if(before != nullptr && after != nullptr) {
+            before->next = after;
+            after->previous = before;
+            nI.operator++();
+        }
+        else if (before == nullptr && after == nullptr) {
+            head = nullptr;
+            tail = nullptr;
+        }
+        else if (before == nullptr && after != nullptr){
+            head = after;
+            after->previous = nullptr;
+            nI.operator++();
+        }
+        else {
+            tail = before;
+            before->next = nullptr;
+            nI.operator--();
+        }
         current->previous = nullptr; //yes or no
         current->next = nullptr; //yes or no
         delete current;

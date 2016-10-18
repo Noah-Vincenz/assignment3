@@ -36,8 +36,7 @@ public:
     T & operator*() {
         return current->data;
     }
-
-    void const operator++() {
+    void const operator++() { //whats wrong here
         current = current->next;
     }
     bool const operator==(NodeIterator &otherNodeIterator) {
