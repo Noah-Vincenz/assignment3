@@ -37,7 +37,6 @@ public:
         return current->data;
     }
 
-    // TODO: complete the code for NodeIterator here
     void const operator++() {
         current = current->next;
     }
@@ -50,8 +49,9 @@ public:
     Node<T>* getCurrentNode () {
         return current;
     }
-
-
+    void const operator--() {
+        current = current->previous;
+    }
 };
 
 // do not edit below this line
