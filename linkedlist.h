@@ -3,6 +3,7 @@
 
 #include "node.h"
 #include <initializer_list>
+#include <list>
 
 // TODO your code goes here:
 template <typename T>
@@ -13,19 +14,26 @@ private:
     int count;
 public:
     LinkedList (std::initializer_list<T> l) {
-        head = *l.begin();
-        tail = *l.end();
-        count = l.size();
-        NodeIterator<T> * nI = new NodeIterator<T>(*l.begin());
-        for (int i = 1; i < l.size(); ++i) {
-            push_back(nI->getCurrentNode());
-            nI->operator++();
+        auto itr = l.begin();
+        /*cout << l.size() << endl;
+        cout << *l.begin() << endl; //2
+        cout << *l.end() << endl; //2
+         */
+        for (auto i = 0; i < l.size(); ++i) {
+            push_back(*itr);
+            itr++;
+        }
+        cout << "This is the linked list's size: " << size() << endl;
+        auto itr2 = begin();
+        for (auto i = 0; i < size(); ++i) {
+            cout << itr2.getCurrentNode()->data << endl;
+            itr2.operator++();
         }
     }
-    LinkedList () //TODO: change constructor so it takes initiliser list
+    LinkedList ()
             : head(nullptr), tail(nullptr), count(0) {
     }
-    void push_front(T dataIn) {
+    void push_front(const T dataIn) {
         Node<T>* newNode = new Node<T>(dataIn);
         if (count == 0) {
             head = newNode;
@@ -44,7 +52,7 @@ public:
     T const front() {
         return head->data;
     }
-    void push_back(T dataIn) {
+    void push_back(const T dataIn) {
         Node<T>* newNode = new Node<T>(dataIn);
         if (count == 0) {
             head = newNode;
@@ -54,13 +62,10 @@ public:
         }
         else {
             Node<T>* prevTail = tail;
-            //cout << "This is prevTail: " << prevTail->data << endl;
             tail->next = newNode;
             tail = newNode;
-            //cout << "This is newTail: " << tail->data << endl;
             tail->previous = prevTail;
             ++count;
-            //cout << endl;
             //delete prevTail; //--
         }
     }
@@ -69,80 +74,30 @@ public:
     }
     int const size() {
         return count;
-    }/* //_______version1
-    NodeIterator<T> begin() {
+    }
+    NodeIterator<T> begin() { // do not change
         NodeIterator<T>* nI = new NodeIterator<T>(head);
         return *nI;
     }
-    NodeIterator<T> end() {
-        NodeIterator<T>* nI = new NodeIterator<T>(head);
-        for (int i = 0; i <= size(); ++i) {
-            nI++;
-        }
-        return *nI;
-    }
-    ~LinkedList() {
-        NodeIterator<T>* nI = new NodeIterator<T>(head);
-        NodeIterator<T> nI2 = *nI;
-        for (int i = 0; i < size(); ++i) {
-            delete nI2.getCurrentNode();
-            nI++;
-        }
-        //delete nI; //--
-        //delete nI2; //--
-    }
-    NodeIterator<T> insert (NodeIterator<T>* nI, T dataIn) { //inserts before current & returns iterator pointing to newElem
-        NodeIterator<T> nI2 = *nI;
-        Node<T>* newNode(dataIn);
-        Node<T> beforeNew = nI2.getCurrentNode()->previous;
-        Node<T> afterNew = nI2.getCurrentNode();
-        nI++;
-        beforeNew.next = newNode;
-        afterNew.previous = newNode;
-        *newNode->next = afterNew;
-        *newNode->previous = beforeNew;
-        count++;
-        return nI;
-    }
-    NodeIterator<T> erase (NodeIterator<T>* nI) {
-        NodeIterator<T> nI2 = *nI;
-        Node<T> first = nI2.getCurrentNode()->previous;
-        Node<T> second = nI2.getCurrentNode()->next;
-        nI2.getCurrentNode()->previous = nullptr;
-        nI2.getCurrentNode()->next = nullptr;
-        nI++;
-        *first.next = second;
-        *second.previous = first;
-        count--; //delete first and second???
-        return nI;
-    }*/ //version____2
-    NodeIterator<T> begin() {
-        NodeIterator<T>* nI = new NodeIterator<T>(head);
-        return *nI;
-    }
-    NodeIterator<T> end() {
+    NodeIterator<T> end() { // do not change
         NodeIterator<T>* nI = new NodeIterator<T>(head);
         for (int i = 0; i <= size(); ++i) {
             nI->operator++();
         }
         return *nI;
-    }/*
+    }
     ~LinkedList() {
         NodeIterator<T>* nI = new NodeIterator<T>(head);
-        NodeIterator<T> nI2 = *nI;
         for (int i = 0; i < size(); ++i) {
-            delete nI2.getCurrentNode();
-            nI++;
+            delete nI->getCurrentNode();
+            nI->operator++();
         }
-        //delete nI; //--
-        //delete nI2; //--
-    }*/
-    NodeIterator<T> insert (NodeIterator<T> nI, T dataIn) { //inserts before current & returns iterator pointing to newElem
-        NodeIterator<T> nI2 = *nI;
-        Node<T>* newNode(dataIn);
-        Node<T> beforeNew = nI2.getCurrentNode()->previous;
-        Node<T> afterNew = nI2.getCurrentNode();
-        *nI++;
+    }
+    NodeIterator<T> insert (NodeIterator<T> nI,const T dataIn) { //inserts before current & returns iterator pointing to newElem
+        Node<T>* newNode = new Node<T>(dataIn);
+        Node<T> beforeNew = *nI.getCurrentNode()->previous;
+        Node<T> afterNew = *nI.getCurrentNode();
+        nI.operator++();
         beforeNew.next = newNode;
         afterNew.previous = newNode;
         *newNode->next = afterNew;
@@ -151,11 +106,10 @@ public:
         return nI;
     }
     NodeIterator<T> erase (NodeIterator<T> nI) {
-        NodeIterator<T> nI2 = *nI;
-        Node<T> before = nI.getCurrentNode()->previous;
-        Node<T> after = nI.getCurrentNode()->next;
-        nI2.getCurrentNode()->previous = nullptr;
-        nI2.getCurrentNode()->next = nullptr;
+        Node<T> before = *nI.getCurrentNode()->previous;
+        Node<T> after = *nI.getCurrentNode()->next;
+        nI.getCurrentNode()->previous = nullptr;
+        nI.getCurrentNode()->next = nullptr;
         nI.operator++();
         *before.next = after;
         *after.previous = before;

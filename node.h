@@ -41,7 +41,6 @@ public:
     void const operator++() {
         current = current->next;
     }
-    //const node_iter& operator++() { current = current->next; return *this; }
     bool const operator==(NodeIterator &otherNodeIterator) {
         return current == otherNodeIterator.current;
     }
